@@ -47,6 +47,11 @@
             
             <!-- ECRAN 1: JURNAL (Acasă) -->
             <div id="screen-journal" class="space-y-6">
+                <!-- Notificare pentru API Key -->
+                <div id="api-key-notification" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-xl relative" role="alert">
+                  <strong class="font-bold" data-translate="api_key_needed_title">API Key Required!</strong>
+                  <span class="block sm:inline" data-translate="api_key_needed_desc">AI functionality is disabled. Please add your API key in the index.html file.</span>
+                </div>
                 <div>
                     <h2 class="text-3xl font-bold text-gray-900" data-translate="journal_title">Your Journal</h2>
                     <p class="text-gray-500" data-translate="journal_subtitle">Reflect on your day. What's on your mind?</p>
@@ -151,7 +156,9 @@
                     nav_about: "About",
                     alert_empty_journal: "Please write something in the journal before analyzing.",
                     api_error: "Sorry, an error occurred. Please try again later.",
-                    api_unexpected_response: "Could not process the response. Please try rephrasing."
+                    api_unexpected_response: "Could not process the response. Please try rephrasing.",
+                    api_key_needed_title: "API Key Required!",
+                    api_key_needed_desc: "AI functionality is disabled. Please add your API key in the index.html file."
                 },
                 ro: {
                     journal_title: "Jurnalul tău",
@@ -176,7 +183,9 @@
                     nav_about: "Despre",
                     alert_empty_journal: "Te rog scrie ceva în jurnal înainte de a analiza.",
                     api_error: "Ne pare rău, a apărut o eroare. Te rog încearcă din nou mai târziu.",
-                    api_unexpected_response: "Nu am putut procesa răspunsul. Încearcă să reformulezi."
+                    api_unexpected_response: "Nu am putut procesa răspunsul. Încearcă să reformulezi.",
+                    api_key_needed_title: "API Key Necesar!",
+                    api_key_needed_desc: "Funcționalitatea AI este dezactivată. Te rog adaugă cheia ta API în fișierul index.html."
                 }
             };
             
@@ -201,6 +210,7 @@
             }
 
             // --- SELECTAREA ELEMENTELOR ---
+            const apiKeyNotification = document.getElementById('api-key-notification');
             const navItems = document.querySelectorAll('.nav-item');
             const screens = document.querySelectorAll('main > div[id^="screen-"]');
             const journalTextarea = document.getElementById('journal-entry');
@@ -211,8 +221,22 @@
             const supportButton = document.getElementById('support-button');
             const languageSwitcher = document.getElementById('language-switcher');
             
-            const API_KEY = "";
-            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+            // ===================================================================
+            // CHEIA TA API A FOST INTRODUSĂ AICI
+            // ===================================================================
+            const API_KEY = "AIzaSyCXnD-NIUMHYghXpDWlEIf7VLd-lSXbmhc";
+            // ===================================================================
+
+            function checkApiKey() {
+                if (API_KEY === "LIpește CHEIA TA API AICI" || !API_KEY) {
+                    apiKeyNotification.classList.remove('hidden');
+                    analyzeButton.disabled = true;
+                    return false;
+                }
+                apiKeyNotification.classList.add('hidden');
+                analyzeButton.disabled = false;
+                return true;
+            }
 
             // --- LOGICA DE NAVIGAȚIE ---
             navItems.forEach(item => {
@@ -239,6 +263,8 @@
             
             // --- LOGICA APLICAȚIEI ---
             analyzeButton.addEventListener('click', async function() {
+                if (!checkApiKey()) return;
+
                 const entryText = journalTextarea.value.trim();
                 if (!entryText) {
                     alert(translations[currentLang].alert_empty_journal);
@@ -268,6 +294,7 @@
             async function getAIAnalysis(text) {
                 const langName = currentLang === 'ro' ? 'Romanian' : 'English';
                 const prompt = `You are an empathetic wellness assistant. Analyze the following journal entry. Your response must be a short, encouraging summary (2-3 sentences) that identifies the main emotions without being clinical. Be like a supportive friend. IMPORTANT: Your entire response must be in the ${langName} language. The entry is: "${text}"`;
+                const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
                 const payload = { contents: [{ role: "user", parts: [{ "text": prompt }] }] };
 
                 const response = await fetch(API_URL, {
@@ -327,7 +354,7 @@
 
             // --- EVENIMENTE SUPLIMENTARE ---
             supportButton.addEventListener('click', () => {
-                window.open('https://ko-fi.com/stefanodangello/', '_blank');
+                window.open('/https://ko-fi.com/stefanodangello/', '_blank');
             });
 
             languageSwitcher.addEventListener('change', (event) => {
@@ -339,6 +366,7 @@
             const initialLang = translations[userLang] ? userLang : 'en';
             languageSwitcher.value = initialLang;
             setLanguage(initialLang);
+            checkApiKey();
 
             switchScreen('screen-journal');
             console.log("LifePass ID (International) Initialized!");
