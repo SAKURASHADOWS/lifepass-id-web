@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- Limba implicită este Engleza -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifePass ID - Your Emotional Journal</title>
+    <!-- Includem Tailwind CSS pentru design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Includem fontul Inter de pe Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .transition-all {
+            transition: all 0.3s ease-in-out;
+        }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .nav-item.active svg,
+        .nav-item.active span {
+            color: #14B8A6; /* Teal-500 */
+        }
+        .shadow-soft {
+             box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.05), 0 2px 4px -2px rgb(0 0 0 / 0.05);
+        }
+        button:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 antialiased">
+
+    <!-- Containerul principal al aplicației, centrat pe ecran -->
+    <div id="app-container" class="max-w-md mx-auto h-screen bg-white flex flex-col">
+        
+        <!-- Header fix -->
+        <header class="p-4 border-b border-gray-200">
+            <h1 class="text-xl font-bold text-center text-gray-800">LifePass ID</h1>
+        </header>
+
+        <!-- Conținutul principal (ecranele care se schimbă) -->
+        <main class="flex-grow overflow-y-auto no-scrollbar pb-24 p-6 space-y-8">
+            
+            <!-- ECRAN 1: JURNAL (Acasă) -->
+            <div id="screen-journal" class="space-y-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-900" data-translate="journal_title">Your Journal</h2>
+                    <p class="text-gray-500" data-translate="journal_subtitle">Reflect on your day. What's on your mind?</p>
+                </div>
+                <div class="bg-white rounded-2xl p-4 border border-gray-200 shadow-soft">
+                    <textarea id="journal-entry" class="bg-transparent w-full h-48 p-2 text-gray-700 focus:outline-none resize-none" data-translate-placeholder="journal_placeholder"></textarea>
+                </div>
+                <button id="analyze-button" class="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-4 rounded-xl w-full transition-all flex items-center justify-center shadow-lg shadow-teal-500/30">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.938V19a1 1 0 01-2 0v-4.062a4.5 4.5 0 114 0zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd" /></svg>
+                    <span data-translate="analyze_button">Analyze with AI</span>
+                </button>
+                <div id="ai-analysis-result-container" class="hidden">
+                    <div class="bg-teal-500/10 border border-teal-200 rounded-2xl p-5 shadow-soft">
+                        <h3 class="font-semibold text-teal-600 mb-2" data-translate="ai_summary_title">AI Emotional Summary:</h3>
+                        <p id="ai-analysis-result" class="text-gray-600 text-sm">Your analysis will appear here...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ECRAN 2: ISTORIC -->
+            <div id="screen-history" class="space-y-6 hidden">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900" data-translate="history_title">Your History</h1>
+                    <p class="text-gray-500" data-translate="history_subtitle">Review your past entries.</p>
+                </div>
+                <div id="history-container" class="space-y-4">
+                    <p class="text-gray-400 text-center" data-translate="no_history">No entries in history.</p>
+                </div>
+            </div>
+
+            <!-- ECRAN 3: DESPRE / SETĂRI -->
+            <div id="screen-about" class="space-y-8 hidden">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900" data-translate="about_title">About LifePass ID</h1>
+                    <p class="text-gray-500 mt-2" data-translate="about_desc">LifePass ID is an intelligent emotional journal, designed to help you better understand your inner states. Using AI, we analyze your text to give you a clear perspective on your emotions, in a completely private and secure way.</p>
+                </div>
+                 <div class="bg-white rounded-2xl p-5 shadow-soft border border-gray-200">
+                    <h2 class="font-semibold text-teal-600 mb-2" data-translate="language_title">Language</h2>
+                    <select id="language-switcher" class="w-full bg-gray-100 border-gray-300 text-gray-700 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-teal-500">
+                        <option value="en">English</option>
+                        <option value="ro">Română</option>
+                    </select>
+                </div>
+                <div class="bg-white rounded-2xl p-5 shadow-soft border border-gray-200">
+                    <h2 class="font-semibold text-teal-600 mb-2" data-translate="privacy_title">Privacy</h2>
+                    <p class="text-sm text-gray-700" data-translate="privacy_desc">All your data is saved exclusively on your device, in the browser. Nothing is sent to an external server, except for the text you submit for AI analysis, which is processed anonymously.</p>
+                </div>
+                <div class="bg-amber-400/20 border border-amber-300 rounded-2xl p-5 text-center">
+                    <h2 class="font-bold text-amber-800 mb-2" data-translate="support_title">Support the Project</h2>
+                    <p class="text-sm text-amber-700 mb-4" data-translate="support_desc">If you find this app useful, you can support its development with a coffee. Any contribution helps maintain and improve the project!</p>
+                    <button id="support-button" class="bg-amber-500 hover:bg-amber-600 text-white font-bold py-2 px-4 rounded-lg transition-all shadow-lg shadow-amber-500/30" data-translate="support_button">
+                        Buy me a coffee
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Navigație fixă în partea de jos -->
+        <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/80 backdrop-blur-sm border-t border-gray-200">
+            <div class="flex justify-around h-20">
+                <button class="nav-item flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-teal-500 transition-all active" data-screen="journal">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v11.494M12 6.253c1.657 0 3-1.492 3-3.333S13.657-.417 12 6.253v0c-1.657 0-3-1.492-3-3.333S10.343-.417 12 6.253z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v11.494c-1.657 0-3 1.492-3 3.333s1.343 3.75 3 3.333c1.657 0 3-1.492 3-3.333s-1.343-3.75-3-3.333z" /></svg>
+                    <span class="text-xs font-medium mt-1" data-translate="nav_journal">Journal</span>
+                </button>
+                <button class="nav-item flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-teal-500 transition-all" data-screen="history">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span class="text-xs font-medium mt-1" data-translate="nav_history">History</span>
+                </button>
+                <button class="nav-item flex-1 flex flex-col items-center justify-center text-gray-500 hover:text-teal-500 transition-all" data-screen="about">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                    <span class="text-xs font-medium mt-1" data-translate="nav_about">About</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- TRADUCERI ---
+            const translations = {
+                en: {
+                    journal_title: "Your Journal",
+                    journal_subtitle: "Reflect on your day. What's on your mind?",
+                    journal_placeholder: "Write here...",
+                    analyze_button: "Analyze with AI",
+                    analyzing_button: "Analyzing...",
+                    ai_summary_title: "AI Emotional Summary:",
+                    history_title: "Your History",
+                    history_subtitle: "Review your past entries.",
+                    no_history: "No entries in history.",
+                    about_title: "About LifePass ID",
+                    about_desc: "LifePass ID is an intelligent emotional journal, designed to help you better understand your inner states. Using AI, we analyze your text to give you a clear perspective on your emotions, in a completely private and secure way.",
+                    language_title: "Language",
+                    privacy_title: "Privacy",
+                    privacy_desc: "All your data is saved exclusively on your device, in the browser. Nothing is sent to an external server, except for the text you submit for AI analysis, which is processed anonymously.",
+                    support_title: "Support the Project",
+                    support_desc: "If you find this app useful, you can support its development with a coffee. Any contribution helps maintain and improve the project!",
+                    support_button: "Buy me a coffee",
+                    nav_journal: "Journal",
+                    nav_history: "History",
+                    nav_about: "About",
+                    alert_empty_journal: "Please write something in the journal before analyzing.",
+                    api_error: "Sorry, an error occurred. Please try again later.",
+                    api_unexpected_response: "Could not process the response. Please try rephrasing."
+                },
+                ro: {
+                    journal_title: "Jurnalul tău",
+                    journal_subtitle: "Reflectează asupra zilei. Ce ai în minte?",
+                    journal_placeholder: "Scrie aici...",
+                    analyze_button: "Analizează cu AI",
+                    analyzing_button: "Se analizează...",
+                    ai_summary_title: "Sumar Emoțional AI:",
+                    history_title: "Istoricul tău",
+                    history_subtitle: "Vezi intrările salvate anterior.",
+                    no_history: "Nicio intrare în istoric.",
+                    about_title: "Despre LifePass ID",
+                    about_desc: "LifePass ID este un jurnal emoțional inteligent, conceput pentru a te ajuta să-ți înțelegi mai bine stările interioare. Folosind inteligența artificială, analizăm textul tău pentru a-ți oferi o perspectivă clară asupra emoțiilor tale, în mod complet privat și securizat.",
+                    language_title: "Limbă",
+                    privacy_title: "Confidențialitate",
+                    privacy_desc: "Toate datele tale sunt salvate exclusiv pe dispozitivul tău, în browser. Nimic nu este trimis pe un server extern, cu excepția textului pe care îl trimiți pentru analiza AI, care este procesat anonim.",
+                    support_title: "Susține Proiectul",
+                    support_desc: "Dacă găsești această aplicație utilă, poți susține dezvoltarea ei cu o cafea. Orice contribuție ajută la menținerea și îmbunătățirea proiectului!",
+                    support_button: "Cumpără-mi o cafea",
+                    nav_journal: "Jurnal",
+                    nav_history: "Istoric",
+                    nav_about: "Despre",
+                    alert_empty_journal: "Te rog scrie ceva în jurnal înainte de a analiza.",
+                    api_error: "Ne pare rău, a apărut o eroare. Te rog încearcă din nou mai târziu.",
+                    api_unexpected_response: "Nu am putut procesa răspunsul. Încearcă să reformulezi."
+                }
+            };
+            
+            let currentLang = 'en';
+
+            function setLanguage(lang) {
+                if (!translations[lang]) return;
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                document.querySelectorAll('[data-translate]').forEach(el => {
+                    const key = el.dataset.translate;
+                    if (translations[lang][key]) {
+                        el.textContent = translations[lang][key];
+                    }
+                });
+                document.querySelectorAll('[data-translate-placeholder]').forEach(el => {
+                    const key = el.dataset.translatePlaceholder;
+                    if (translations[lang][key]) {
+                        el.placeholder = translations[lang][key];
+                    }
+                });
+            }
+
+            // --- SELECTAREA ELEMENTELOR ---
+            const navItems = document.querySelectorAll('.nav-item');
+            const screens = document.querySelectorAll('main > div[id^="screen-"]');
+            const journalTextarea = document.getElementById('journal-entry');
+            const analyzeButton = document.getElementById('analyze-button');
+            const aiResultContainer = document.getElementById('ai-analysis-result-container');
+            const aiResultParagraph = document.getElementById('ai-analysis-result');
+            const historyContainer = document.getElementById('history-container');
+            const supportButton = document.getElementById('support-button');
+            const languageSwitcher = document.getElementById('language-switcher');
+            
+            const API_KEY = "";
+            const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
+
+            // --- LOGICA DE NAVIGAȚIE ---
+            navItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const screenName = item.dataset.screen;
+                    const screenId = 'screen-' + screenName;
+                    
+                    navItems.forEach(nav => nav.classList.remove('active'));
+                    item.classList.add('active');
+                    
+                    switchScreen(screenId);
+
+                    if (screenName === 'history') {
+                        loadAndDisplayHistory();
+                    }
+                });
+            });
+
+            function switchScreen(screenId) {
+                screens.forEach(screen => screen.classList.add('hidden'));
+                const activeScreen = document.getElementById(screenId);
+                if (activeScreen) activeScreen.classList.remove('hidden');
+            }
+            
+            // --- LOGICA APLICAȚIEI ---
+            analyzeButton.addEventListener('click', async function() {
+                const entryText = journalTextarea.value.trim();
+                if (!entryText) {
+                    alert(translations[currentLang].alert_empty_journal);
+                    return;
+                }
+
+                analyzeButton.querySelector('span').textContent = translations[currentLang].analyzing_button;
+                analyzeButton.disabled = true;
+                aiResultContainer.classList.add('hidden');
+
+                try {
+                    const analysisText = await getAIAnalysis(entryText);
+                    aiResultParagraph.textContent = analysisText;
+                    aiResultContainer.classList.remove('hidden');
+                    saveJournalEntry(entryText, analysisText);
+                    journalTextarea.value = '';
+                } catch (error) {
+                    console.error("AI Analysis Error:", error);
+                    aiResultParagraph.textContent = translations[currentLang].api_error;
+                    aiResultContainer.classList.remove('hidden');
+                } finally {
+                    analyzeButton.querySelector('span').textContent = translations[currentLang].analyze_button;
+                    analyzeButton.disabled = false;
+                }
+            });
+
+            async function getAIAnalysis(text) {
+                const langName = currentLang === 'ro' ? 'Romanian' : 'English';
+                const prompt = `You are an empathetic wellness assistant. Analyze the following journal entry. Your response must be a short, encouraging summary (2-3 sentences) that identifies the main emotions without being clinical. Be like a supportive friend. IMPORTANT: Your entire response must be in the ${langName} language. The entry is: "${text}"`;
+                const payload = { contents: [{ role: "user", parts: [{ "text": prompt }] }] };
+
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) throw new Error(`API Error: ${response.statusText}`);
+                const result = await response.json();
+
+                if (result.candidates && result.candidates[0]?.content?.parts[0]?.text) {
+                    return result.candidates[0].content.parts[0].text;
+                } else {
+                    console.warn("Unexpected API response structure:", result);
+                    return translations[currentLang].api_unexpected_response;
+                }
+            }
+
+            function saveJournalEntry(entryText, analysisText) {
+                const history = JSON.parse(localStorage.getItem('journalHistory')) || [];
+                const newEntry = {
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    text: entryText,
+                    analysis: analysisText
+                };
+                history.unshift(newEntry);
+                localStorage.setItem('journalHistory', JSON.stringify(history));
+            }
+
+            function loadAndDisplayHistory() {
+                const history = JSON.parse(localStorage.getItem('journalHistory')) || [];
+                historyContainer.innerHTML = ''; 
+
+                if (history.length === 0) {
+                    historyContainer.innerHTML = `<p class="text-gray-400 text-center" data-translate="no_history">${translations[currentLang].no_history}</p>`;
+                    return;
+                }
+
+                history.forEach(entry => {
+                    const entryDate = new Date(entry.date);
+                    const formattedDate = entryDate.toLocaleDateString(currentLang === 'ro' ? 'ro-RO' : 'en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    const entryElement = document.createElement('div');
+                    entryElement.className = 'bg-white p-4 rounded-xl border border-gray-200 shadow-soft space-y-3';
+                    entryElement.innerHTML = `
+                        <p class="text-xs font-semibold text-teal-600">${formattedDate}</p>
+                        <p class="text-gray-700 italic">"${entry.text}"</p>
+                        <div class="border-t border-gray-200 pt-3">
+                            <p class="text-xs text-gray-500 font-semibold mb-1">${translations[currentLang].ai_summary_title.toUpperCase()}</p>
+                            <p class="text-sm text-gray-600">${entry.analysis}</p>
+                        </div>
+                    `;
+                    historyContainer.appendChild(entryElement);
+                });
+            }
+
+            // --- EVENIMENTE SUPLIMENTARE ---
+            supportButton.addEventListener('click', () => {
+                window.open('https://www.buymeacoffee.com/', '_blank');
+            });
+
+            languageSwitcher.addEventListener('change', (event) => {
+                setLanguage(event.target.value);
+            });
+
+            // --- INIȚIALIZAREA APLICAȚIEI ---
+            const userLang = navigator.language.split('-')[0];
+            const initialLang = translations[userLang] ? userLang : 'en';
+            languageSwitcher.value = initialLang;
+            setLanguage(initialLang);
+
+            switchScreen('screen-journal');
+            console.log("LifePass ID (International) Initialized!");
+        });
+    </script>
+
+</body>
+</html>
